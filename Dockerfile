@@ -1,7 +1,7 @@
 FROM ubuntu:bionic 
 MAINTAINER Alex Petrin <shoroop.spb@gmail.com>
 
-#announce that we have'n interactive console
+#announce that we haven't interactive console
 ENV DEBIAN_FRONTEND noninteractive
 
 #defining rcon pass, it's easier to make it here
@@ -25,7 +25,7 @@ RUN dpkg --add-architecture i386
 #updating system
 RUN apt-get update && apt-get upgrade -y
 
-#installing build-essential, ia32-libs and other missing stuff
+#installing other missing stuff
 RUN apt-get install libstdc++6:i386 -y
 
 #making samp dir
@@ -40,14 +40,14 @@ RUN tar xvzf /var/samp/samp037svr_R2-1.tar.gz -C /var/samp
 #using new samp dir (I am too lazy to move samp03 dir)
 WORKDIR /var/samp/samp03
 
-#chmodding binaries
-RUN chmod +x samp-npc samp03svr announce
+#copying from etc dir
+COPY etc/. .
 
 #replacing rcon pass in server.cfg
 RUN sed -i "s/changeme/${rcon_pass}/g" server.cfg
 
-#copying from etc dir
-COPY etc/. .
+#chmodding binaries
+RUN chmod +x samp-npc samp03svr announce
 
 #finally, run samp03svr
 CMD ["/var/samp/samp03/samp03svr"]
