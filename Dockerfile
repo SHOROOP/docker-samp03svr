@@ -4,6 +4,9 @@ MAINTAINER Alex Petrin <shoroop.spb@gmail.com>
 #announce that we have'n interactive console
 ENV DEBIAN_FRONTEND noninteractive
 
+#defining rcon pass, it's easier to make it here
+ENV rcon_pass fuckchangemepass
+
 #exposing working port
 EXPOSE 7777
 
@@ -19,11 +22,11 @@ ENTRYPOINT ["/init"]
 #adding i386 arch
 RUN dpkg --add-architecture i386
 
-#updating system and installing locales
-RUN apt-get update && apt-get upgrade -y && apt-get install language-pack-en language-pack-ru -y
+#updating system
+RUN apt-get update && apt-get upgrade -y
 
 #installing build-essential, ia32-libs and other missing stuff
-RUN apt-get install build-essential lib32ncurses5 lib32z1 libstdc++6:i386 -y
+RUN apt-get install libstdc++6:i386 -y
 
 #making samp dir
 RUN mkdir /var/samp
@@ -31,17 +34,20 @@ RUN mkdir /var/samp
 #downloading samp03svr binaries
 ADD http://files.sa-mp.com/samp037svr_R2-1.tar.gz /var/samp
 
-#unpack samp03svr
+#unpacking samp03svr tarball
 RUN tar xvzf /var/samp/samp037svr_R2-1.tar.gz -C /var/samp
 
-#use new samp dir (I am too lazy to move samp03 dir)
+#using new samp dir (I am too lazy to move samp03 dir)
 WORKDIR /var/samp/samp03
 
-#chmod binaries
+#chmodding binaries
 RUN chmod +x samp-npc samp03svr announce
+
+#replacing rcon pass in server.cfg
+RUN sed -i "s/changeme/${rcon_pass}/g" server.cfg
 
 #copying from etc dir
 COPY etc/. .
 
-#run samp03svr
+#finally, run samp03svr
 CMD ["/var/samp/samp03/samp03svr"]
