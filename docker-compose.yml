@@ -1,0 +1,4 @@
+samp03svr:
+  build: ./
+  tty: true
+  net: host

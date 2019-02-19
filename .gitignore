@@ -1,0 +1,5 @@
+# exclude everything from etc dir
+etc/*
+
+# but keep the directory
+!etc/.gitkeep 
