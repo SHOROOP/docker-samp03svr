@@ -40,9 +40,6 @@ WORKDIR /var/samp/samp03
 #chmod binaries
 RUN chmod +x samp-npc samp03svr announce
 
-#changing default pass
-RUN sed -i 's/changeme/314617201/g' server.cfg
-
 #copying from etc dir
 COPY etc/. .
 
