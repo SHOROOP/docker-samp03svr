@@ -43,6 +43,9 @@ WORKDIR /var/samp/samp03
 #copying from etc dir
 COPY etc/. .
 
+#removing server_log.txt if it exist and create a symlink to stdout (to make logs be readable from docker logs)
+RUN rm -f server_log.txt && ln -s /dev/stdout server_log.txt
+
 #replacing rcon pass in server.cfg
 RUN sed -i "s/changeme/${rcon_pass}/g" server.cfg
 
